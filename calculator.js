@@ -28,6 +28,85 @@ function refreshTable(table, monsterStats, ownedMonsters){
   
   console.log(ownedMonsters)
 }
+
+function testBreedingPair(monsterStats, monsters, numTimes){
+  let pairList = []
+  let debugTest = false
+  for(let m1=1; m1<monsters.length; m1++){
+    for(let m2=m1+1; m2<monsters.length; m2++){
+      pairList[m1.toString() + "&" + m2.toString()]=0;
+      if(debugTest) console.log("Testing: "+m1.toString() + "&" + m2.toString())
+      for(let i=0; i<numTimes; i++){
+        if(debugTest)console.log("Trial: "+i.toString())
+        if(debugTest)console.log("Testing rarity...")
+        let childRarity = Math.floor(Math.random()*Math.max(parseInt(monsters[m1].Rarity), parseInt(monsters[m2].Rarity))) + 1
+        if(debugTest)console.log("child Rarity: " + childRarity.toString())
+        if(childRarity>7 || childRarity<1) console.log("rarity is not possible: "+childRarity)
+        if(childRarity<parseInt(monsters[0].Rarity)) continue
+        if(debugTest)console.log("Testing Shiny...")
+        let childShiny = (monsters[m1].Shiny==1||monsters[m2].Shiny==1)?(Math.random()*100)<25:false;
+        childShiny=childShiny?1:0;
+        if(debugTest){
+          console.log("Shiny: " + childShiny.toString())
+          console.log('parseInt(monsters[0].Shiny)==1')
+          console.log(parseInt(monsters[0].Shiny)==1)
+          console.log('(childRarity<3||childShiny===0)')
+          console.log((childRarity<3||childShiny===0))
+          console.log(monsters[0])
+        }
+        if((childRarity<3||childShiny===0)&&parseInt(monsters[0].Shiny)==1) continue
+        if(debugTest)console.log("TestingHp...")
+        let childHp = Math.floor(Math.random()*50)
+        if(childHp<parseInt(monsters[0].Hp)) continue
+        if(debugTest)console.log("Testing Atk...")
+        let childAtk = Math.floor(Math.random()*50)
+        if(childAtk<parseInt(monsters[0].Atk)) continue
+        if(debugTest)console.log("Testing Attributes...")
+        let attrList=[]
+        for(let j=5; j<monsterStats.length; j++){
+          if(monsters[m1][monsterStats[j]] && !attrList.includes(monsters[m1][monsterStats[j]])){
+            attrList.push(monsters[m1][monsterStats[j]])
+          }
+          if(monsters[m2][monsterStats[j]] && !attrList.includes(monsters[m2][monsterStats[j]])){
+            attrList.push(monsters[m2][monsterStats[j]])
+          }
+        }
+        if(debugTest)console.log("Attribute list pre Splice: ")
+        if(debugTest)console.log(attrList)
+        while(attrList.length>7){
+          attrList.splice(Math.floor(Math.random()*attrList.length),1)
+        }
+        let hasAttributes = true
+        for(let j=5; j<monsterStats.length; j++){
+          hasAttributes&=attrList.includes(monsters[0][monsterStats[j]])
+        }
+        if(debugTest)console.log("Attr list then monster 0 list then hasAttributes")
+        if(debugTest)console.log(attrList)
+        if(debugTest)console.log(monsters[0])
+        if(debugTest)console.log(hasAttributes)
+        if(!hasAttributes) continue
+        pairList[m1.toString() + "&" + m2.toString()]+=1
+      }
+      pairList[m1.toString() + "&" + m2.toString()]*=100;
+      pairList[m1.toString() + "&" + m2.toString()]/=numTimes;
+    }
+  }
+  let orderedList = []
+  for (const [key, value] of Object.entries(pairList)) {
+    console.log(`${key}: ${value}`);
+    orderedList.push({
+      name: key,
+      chanceToGetTarget: value
+    })
+  }
+  pairList=orderedList.sort( (a,b)=>{
+    return a.chanceToGetTarget-b.chanceToGetTarget
+  })
+  if(debugTest)console.log("Going to print pair list")
+  console.log(pairList)
+  return pairList
+}
+
 window.onload = function(){
   let monsterStats=[
     "Name",
@@ -97,7 +176,7 @@ window.onload = function(){
   let numRemove = document.getElementById("MonsterToRemove")
   numRemove.placeholder="Num to delete with '-'"
   numRemove.addEventListener("keyup", function(event) {
-    numRemove.value = event.target.value; console.log(numRemove.text); //console.log(event.target.value)
+    numRemove.value = event.target.value; console.log(numRemove.value); //console.log(event.target.value)
   });
   addButton.addEventListener("click", function(event) {
     ownedMonsters.push(
@@ -138,7 +217,15 @@ window.onload = function(){
       x.style.display = "none";
     }
   })
-  
+
+  let numTests = document.getElementById("NumTests")
+  numTests.addEventListener("keyup", function(event) {
+    numTests.value = event.target.value; console.log(numTests.value); //console.log(event.target.value)
+  });
+  let calcPairsButton = document.getElementById("TestPairsButton")
+  calcPairsButton.addEventListener("click", function(event) {
+    testBreedingPair(monsterStats, ownedMonsters, parseInt(numTests.value));
+  })
 
 }
 
