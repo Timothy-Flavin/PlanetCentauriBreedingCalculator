@@ -56,10 +56,24 @@ function testBreedingPair(monsterStats, monsters, numTimes){
         }
         if((childRarity<3||childShiny===0)&&parseInt(monsters[0].Shiny)==1) continue
         if(debugTest)console.log("TestingHp...")
-        let childHp = Math.floor(Math.random()*50)
+        let avgHp = Math.floor((parseInt(monsters[m1].Hp)+parseInt(monsters[m2].Hp))/2)
+        let childHp = Math.floor(Math.random()*(Math.max(parseInt(monsters[m1].Hp), parseInt(monsters[m2].Hp))+1))
+        if(debugTest){
+          console.log("childHpBeforeMin "+childHp.toString())
+          console.log("Max parent hp: " + (Math.max(parseInt(monsters[m1].Hp), parseInt(monsters[m2].Hp))+1).toString())
+        }
+        if(childHp<avgHp) childHp=avgHp
+        if(debugTest){
+          console.log("child hp")
+          console.log(childHp)
+          console.log("avg hp")
+          console.log(avgHp)
+        }
         if(childHp<parseInt(monsters[0].Hp)) continue
         if(debugTest)console.log("Testing Atk...")
-        let childAtk = Math.floor(Math.random()*50)
+        let avgAtt = Math.floor((parseInt(monsters[m1].Atk)+parseInt(monsters[m2].Atk))/2)
+        let childAtk = Math.floor(Math.random()*Math.max(parseInt(monsters[m1].Atk), parseInt(monsters[m2].Atk)))+1
+        if(childAtk<avgAtt) childAtk=avgAtt
         if(childAtk<parseInt(monsters[0].Atk)) continue
         if(debugTest)console.log("Testing Attributes...")
         let attrList=[]
@@ -100,7 +114,7 @@ function testBreedingPair(monsterStats, monsters, numTimes){
     })
   }
   pairList=orderedList.sort( (a,b)=>{
-    return a.chanceToGetTarget-b.chanceToGetTarget
+    return b.chanceToGetTarget-a.chanceToGetTarget
   })
   if(debugTest)console.log("Going to print pair list")
   console.log(pairList)
@@ -219,13 +233,40 @@ window.onload = function(){
   })
 
   let numTests = document.getElementById("NumTests")
+  numTests.value=1000
   numTests.addEventListener("keyup", function(event) {
     numTests.value = event.target.value; console.log(numTests.value); //console.log(event.target.value)
   });
+
+  let resultsTable = document.createElement("TABLE");
+  resultsTable.border = "1";
+  //add the header
+  
+  let newHeadRow = resultsTable.insertRow(-1);
+  let newHeaderCell = document.createElement("TH");
+  newHeaderCell.innerHTML = "Pair";
+  newHeadRow.appendChild(newHeaderCell);
+  newHeaderCell = document.createElement("TH");
+  newHeaderCell.innerHTML = "Chance to get target";
+  newHeadRow.appendChild(newHeaderCell);
   let calcPairsButton = document.getElementById("TestPairsButton")
   calcPairsButton.addEventListener("click", function(event) {
-    testBreedingPair(monsterStats, ownedMonsters, parseInt(numTests.value));
+    let pairs = testBreedingPair(monsterStats, ownedMonsters, parseInt(numTests.value));
+    while(resultsTable.rows.length>1){
+      resultsTable.deleteRow(1)
+    }
+    for(let i=0; i<pairs.length; i++){
+      row = resultsTable.insertRow(-1);
+      let cell = row.insertCell(-1);
+      cell.innerHTML = pairs[i].name;
+      cell=row.insertCell(-1);
+      cell.innerHTML = pairs[i].chanceToGetTarget + "%";
+
+    }
   })
 
+  dvTable = document.getElementById("resultsTable");
+  dvTable.innerHTML = "";
+  dvTable.appendChild(resultsTable);
 }
 

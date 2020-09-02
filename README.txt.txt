@@ -1,0 +1,1 @@
+Right click index.html and run with a web browser (preferably chrome)
