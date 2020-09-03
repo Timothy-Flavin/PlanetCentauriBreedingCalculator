@@ -121,7 +121,7 @@ function testBreedingPair(monsterStats, monsters, numTimes){
   return pairList
 }
 
-function testBreedingPairB(monsterStats, monsters, numTimes){
+function testBreedingPairB(monsterStats, monsters){
   let pairList = []
   let debugTest = false
   for(let m1=1; m1<monsters.length; m1++){
@@ -387,12 +387,6 @@ window.onload = function(){
     }
   })
 
-  let numTests = document.getElementById("NumTests")
-  numTests.value=1000
-  numTests.addEventListener("keyup", function(event) {
-    numTests.value = event.target.value; console.log(numTests.value) //console.log(event.target.value)
-  })
-
   let resultsTable = document.createElement("TABLE")
   resultsTable.border = "1";
   //add the header
@@ -406,17 +400,10 @@ window.onload = function(){
   newHeadRow.appendChild(newHeaderCell)
   let calcPairsButton = document.getElementById("TestPairsButton")
   calcPairsButton.addEventListener("click", function(event) {
-    console.log("Hi there")
-    var t0 = performance.now()
-    let pairs = testBreedingPair(monsterStats, ownedMonsters, parseInt(numTests.value))
-    console.log(pairs)
-    var t1 = performance.now()
-    
-    console.log("Call to OldBreedingPair took " + (t1 - t0).toString() + " milliseconds.")
-    t0 = performance.now()
-    pairs = testBreedingPairB(monsterStats, ownedMonsters, parseInt(numTests.value))
-    console.log(pairs)
-    t1 = performance.now()
+
+    let t0 = performance.now()
+    let pairs = testBreedingPairB(monsterStats, ownedMonsters)
+    let t1 = performance.now()
     console.log("Call to testBreedingPair took " + (t1 - t0) + " milliseconds.")
     while(resultsTable.rows.length>1){
       resultsTable.deleteRow(1)
