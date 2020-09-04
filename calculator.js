@@ -271,6 +271,10 @@ function createPairsTable(monsterStats, ownedMonsters){
   return pairs
 }
 
+createGroupTable(monsterStats, ownedMonsters){
+  
+}
+
 window.onload = function(){
   let monsterStats=[
     "Name",
