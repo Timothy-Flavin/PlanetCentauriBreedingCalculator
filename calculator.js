@@ -156,6 +156,55 @@ function testBreedingPairB(monsterStats, monsters){
   return pairList
 }
 
+function testBreedingGroups(pairs, numGroups){
+  groups=[]
+  console.log
+  for(let i=0; i<pairs.length - numGroups; i++){
+    let pairNums = []
+    //pairs to look at, total number of pairs in a group, current depth, pairNumToCheck, ScorpionsUsed
+    let group={
+      name:"",
+      chanceToGetTarget: 100
+    }
+    group=checkGroupsRecursive(pairs, numGroups, 0, i, pairNums, group)
+    if(group)
+      groups.push(group)
+  }
+  if(!groups) groups=[{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
+  else{
+
+  }
+  return groups.sort( (a,b)=>{
+    return b.chanceToGetTarget-a.chanceToGetTarget
+  })
+}
+
+function checkGroupsRecursive(pairs, numGroups, curGroupDepth, curPairNum, ScorpionsUsed, group){
+  console.log(group)
+  if(curGroupDepth==numGroups){
+    group.name=group.name.substring(1,group.name.length)
+    group.chanceToGetTarget = 100- group.chanceToGetTarget
+    return group
+  }
+  for(let i=curPairNum; i<pairs.length; i++){
+    //check if this one works
+    let s1 = parseInt(pairs[i].name[0])
+    let s2 = parseInt(pairs[i].name[2])
+    if(!ScorpionsUsed.includes(s1) && !ScorpionsUsed.includes(s2)){
+      group.name += ","+pairs[i].name,
+      console.log(pairs[i].name)
+      console.log(pairs[i].chanceToGetTarget)
+
+      group.chanceToGetTarget*=(100-pairs[i].chanceToGetTarget)/100.0
+      ScorpionsUsed.push(s1)
+      ScorpionsUsed.push(s2)
+      group=checkGroupsRecursive(pairs, numGroups, curGroupDepth+1, i+1, ScorpionsUsed, group)
+      return group
+    }
+  }
+  return null
+}
+
 function createMainTable(monsterStats, ownedMonsters){
   let table = document.createElement("TABLE")
   table.border = "1";
@@ -182,15 +231,12 @@ function createButtons(table, monsterStats, ownedMonsters){
   let addButton = document.getElementById("AddMonsterButton")
   let removeButton = document.getElementById("RemoveMonsterButton")
   let numRemove = document.getElementById("MonsterToRemove")
-  let numPairs = document.getElementById("NumPairs")
 
   numRemove.placeholder="Num to delete with '-'"
   numRemove.addEventListener("keyup", function(event) {
     numRemove.value = parseInt(event.target.value); console.log(numRemove.value) //console.log(event.target.value)
   })
-  numPairs.addEventListener("keyup", function(event) {
-    numPairs.value = parseInt(event.target.value); console.log(numPairs.value) //console.log(event.target.value)
-  })
+  
   addButton.addEventListener("click", function(event) {
     ownedMonsters.push(
       {
@@ -232,47 +278,77 @@ function createButtons(table, monsterStats, ownedMonsters){
   })
 }
 
-function createPairsTable(monsterStats, ownedMonsters){
-  let resultsTable = document.createElement("TABLE")
-  resultsTable.border = "1";
+function createTables(monsterStats, ownedMonsters){
+  let resultsTable = createGroupTable("Pair", "Chance to get target")
   let pairs=null
-  //add the header
-  
-  let newHeadRow = resultsTable.insertRow(-1)
-  let newHeaderCell = document.createElement("TH")
-  newHeaderCell.innerHTML = "Pair";
-  newHeadRow.appendChild(newHeaderCell)
-  newHeaderCell = document.createElement("TH")
-  newHeaderCell.innerHTML = "Chance to get target";
-  newHeadRow.appendChild(newHeaderCell)
+  let groups=null
+  let resultsTable2 = createGroupTable("Group of pairs", "Total chance to get target")
+  let numPairs = document.getElementById("NumPairs")
+  numPairs.addEventListener("keyup", function(event) {
+    console.log("Let's see what this is")
+    console.log(event.target.value)
+
+    if(event.target.value && event.target.value!='' && event.target.value!="NaN")
+      numPairs.value = parseInt(event.target.value)
+    console.log(numPairs.value) //console.log(event.target.value)
+  })
+
   let calcPairsButton = document.getElementById("TestPairsButton")
   calcPairsButton.addEventListener("click", function(event) {
 
     let t0 = performance.now()
     pairs = testBreedingPairB(monsterStats, ownedMonsters)
+    if(numPairs.value>0 && numPairs.value<=ownedMonsters.length/2){
+      groups = testBreedingGroups(pairs, numPairs.value)
+      console.log("Right number of groups bro: "+numPairs)
+    }
+    else{
+      console.log("not the right number of groups bro: "+numPairs)
+      groups=[{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
+    }
     let t1 = performance.now()
+    
     console.log("Call to testBreedingPair took " + (t1 - t0) + " milliseconds.")
-    while(resultsTable.rows.length>1){
-      resultsTable.deleteRow(1)
-    }
-    for(let i=0; i<pairs.length; i++){
-      row = resultsTable.insertRow(-1)
-      let cell = row.insertCell(-1)
-      cell.innerHTML = pairs[i].name;
-      cell=row.insertCell(-1)
-      cell.innerHTML = pairs[i].chanceToGetTarget + "%";
-
-    }
+    refreshResultsTable(resultsTable, pairs)
+    refreshResultsTable(resultsTable2, groups)
   })
 
   dvTable = document.getElementById("resultsTable")
   dvTable.innerHTML = "";
   dvTable.appendChild(resultsTable)
+  dvTable = document.getElementById("resultsTable2")
+  dvTable.innerHTML = "";
+  dvTable.appendChild(resultsTable2)
   return pairs
 }
 
-createGroupTable(monsterStats, ownedMonsters){
+function createGroupTable(string1, string2){
+  let resultsTable = document.createElement("TABLE")
+  resultsTable.border = "1";
+  //add the header
   
+  let newHeadRow = resultsTable.insertRow(-1)
+  let newHeaderCell = document.createElement("TH")
+  newHeaderCell.innerHTML = string1;
+  newHeadRow.appendChild(newHeaderCell)
+  newHeaderCell = document.createElement("TH")
+  newHeaderCell.innerHTML = string2;
+  newHeadRow.appendChild(newHeaderCell)
+
+  return resultsTable
+}
+
+function refreshResultsTable(resultsTable, pairs){
+  while(resultsTable.rows.length>1){
+    resultsTable.deleteRow(1)
+  }
+  for(let i=0; i<pairs.length; i++){
+    row = resultsTable.insertRow(-1)
+    let cell = row.insertCell(-1)
+    cell.innerHTML = pairs[i].name;
+    cell=row.insertCell(-1)
+    cell.innerHTML = pairs[i].chanceToGetTarget + "%";
+  }
 }
 
 window.onload = function(){
@@ -350,11 +426,9 @@ window.onload = function(){
   
   let table = createMainTable(monsterStats, ownedMonsters)
 
+  createTables(monsterStats,ownedMonsters)
+
   createButtons(table, monsterStats, ownedMonsters)
-
-  createPairsTable(monsterStats, ownedMonsters)
-
-  createGroupTable(monsterStats, ownedMonsters)
   
 }
 
