@@ -308,23 +308,26 @@ function createTables(monsterStats, ownedMonsters){
     let errString = validateUserData(ownedMonsters)
     if(errString && errString!=""){
       console.log(errString)
-    }
-
-    let t0 = performance.now()
-    pairs = testBreedingPairB(monsterStats, ownedMonsters)
-    if(numPairs.value>0 && numPairs.value<ownedMonsters.length/2){ //strictly less than because owned monsters includes target monster
-      groups = testBreedingGroups(pairs, numPairs.value)
-      console.log("Right number of groups bro: "+numPairs.value + "out of: " + ownedMonsters.length/2)
+      document.getElementById("errorText").innerHTML=errString
     }
     else{
-      console.log("not the right number of groups bro: "+numPairs.value)
-      groups=[{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
+      document.getElementById("errorText").innerHTML=''
+      let t0 = performance.now()
+      pairs = testBreedingPairB(monsterStats, ownedMonsters)
+      if(numPairs.value>0 && numPairs.value<ownedMonsters.length/2){ //strictly less than because owned monsters includes target monster
+        groups = testBreedingGroups(pairs, numPairs.value)
+        console.log("Right number of groups bro: "+numPairs.value + "out of: " + ownedMonsters.length/2)
+      }
+      else{
+        console.log("not the right number of groups bro: "+numPairs.value)
+        groups=[{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
+      }
+      let t1 = performance.now()
+      
+      console.log("Call to testBreedingPair took " + (t1 - t0) + " milliseconds.")
+      refreshResultsTable(resultsTable, pairs)
+      refreshResultsTable(resultsTable2, groups)
     }
-    let t1 = performance.now()
-    
-    console.log("Call to testBreedingPair took " + (t1 - t0) + " milliseconds.")
-    refreshResultsTable(resultsTable, pairs)
-    refreshResultsTable(resultsTable2, groups)
   })
 
   dvTable = document.getElementById("resultsTable")
@@ -430,7 +433,7 @@ function validateUserData(ownedMonsters){
       atkPassed=false
       errorMessage+="Monsters["+i+"] atk is out of range [0,50]<br/>"
     }
-
+/*
     ownedMonsters[i].Attribute1=ownedMonsters[i].Attribute1.toUpperCase()
     ownedMonsters[i].Attribute2=ownedMonsters[i].Attribute2.toUpperCase()
     ownedMonsters[i].Attribute3=ownedMonsters[i].Attribute3.toUpperCase()
@@ -438,6 +441,7 @@ function validateUserData(ownedMonsters){
     ownedMonsters[i].Attribute5=ownedMonsters[i].Attribute5.toUpperCase()
     ownedMonsters[i].Attribute6=ownedMonsters[i].Attribute6.toUpperCase()
     ownedMonsters[i].Attribute7=ownedMonsters[i].Attribute7.toUpperCase()
+*/
   }
   return errorMessage
 }
