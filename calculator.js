@@ -305,6 +305,11 @@ function createTables(monsterStats, ownedMonsters){
   let calcPairsButton = document.getElementById("TestPairsButton")
   calcPairsButton.addEventListener("click", function(event) {
 
+    let errString = validateUserData(ownedMonsters)
+    if(errString && errString!=""){
+      console.log(errString)
+    }
+
     let t0 = performance.now()
     pairs = testBreedingPairB(monsterStats, ownedMonsters)
     if(numPairs.value>0 && numPairs.value<ownedMonsters.length/2){ //strictly less than because owned monsters includes target monster
@@ -363,11 +368,76 @@ function refreshResultsTable(resultsTable, pairs){
 function validateUserData(ownedMonsters){
   let errorMessage=""
   for(let i=0;i<ownedMonsters.length; i++){
-    rarity=parseInt(ownedMonsters.Rarity)
-    if(!rarity) errorMessage+="Monsters["+i+"] rarity does not exist or is blank"
-    else if(isNaN(rarity)) errorMessage+="Monsters["+i+"] rarity is not a number"
-    else if(rarity<1 || rarity>7) errorMessage+="Monsters["+i+"] rarity is out of range [1,7]"
-    if(!rarity) errorMessage+="Monsters["+i+"] rarity does not exist or is blank"
+//validate rarity input
+    let rarityPassed=true
+    rarity=parseInt(ownedMonsters[i].Rarity)
+    if(!rarity){
+      rarityPassed=false
+      errorMessage+="Monsters["+i+"] rarity does not exist or is blank<br/>"
+    }
+    else if(isNaN(rarity)){
+      rarityPassed=false
+      errorMessage+="Monsters["+i+"] rarity is not a number<br/>"
+    }
+    else if(rarity<1 || rarity>7){ 
+      rarityPassed=false
+      errorMessage+="Monsters["+i+"] rarity is out of range [1,7]<br/>"
+    }
+//validate shiny input
+    let shinyPassed = true
+    shiny = parseInt(ownedMonsters[i].Shiny)
+    console.log("Shiny: ")
+    console.log(shiny)
+    if(isNaN(shiny)) {
+      shinyPassed = false
+      errorMessage+="Monsters["+i+"] shiny is not a number<br/>"
+    }
+    else if(shiny!=0 && shiny!=1) {
+      shinyPassed = false
+      errorMessage+="Monsters["+i+"] shiny should be '1' or '0'<br/>"
+    }
+    else if(shiny===1 && rarityPassed && rarity<4) {
+      shinyPassed = false
+      errorMessage+="Monsters["+i+"] is labeled as shiny, but it's rarity is not high enough to be shiny<br/>"
+    }
+//validate Hp
+    let hpPassed=true
+    let hp=parseInt(ownedMonsters[i].Hp)
+    if(!hp){
+      hpPassed=false
+      errorMessage+="Monsters["+i+"] hp does not exist or is blank<br/>"
+    }
+    else if(isNaN(hp)){
+      hpPassed=false
+      errorMessage+="Monsters["+i+"] hp is not a number<br/>"
+    }
+    else if(hp<0 || hp>50){ 
+      hpPassed=false
+      errorMessage+="Monsters["+i+"] hp is out of range [0,50]<br/>"
+    }
+//validate atk
+    let atkPassed=true
+    let atk=parseInt(ownedMonsters[i].Atk)
+    if(!atk){
+      atkPassed=false
+      errorMessage+="Monsters["+i+"] atk does not exist or is blank<br/>"
+    }
+    else if(isNaN(atk)){
+      atkPassed=false
+      errorMessage+="Monsters["+i+"] atk is not a number<br/>"
+    }
+    else if(atk<0 || atk>50){ 
+      atkPassed=false
+      errorMessage+="Monsters["+i+"] atk is out of range [0,50]<br/>"
+    }
+
+    ownedMonsters[i].Attribute1=ownedMonsters[i].Attribute1.toUpperCase()
+    ownedMonsters[i].Attribute2=ownedMonsters[i].Attribute2.toUpperCase()
+    ownedMonsters[i].Attribute3=ownedMonsters[i].Attribute3.toUpperCase()
+    ownedMonsters[i].Attribute4=ownedMonsters[i].Attribute4.toUpperCase()
+    ownedMonsters[i].Attribute5=ownedMonsters[i].Attribute5.toUpperCase()
+    ownedMonsters[i].Attribute6=ownedMonsters[i].Attribute6.toUpperCase()
+    ownedMonsters[i].Attribute7=ownedMonsters[i].Attribute7.toUpperCase()
   }
   return errorMessage
 }
