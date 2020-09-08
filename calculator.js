@@ -15,12 +15,24 @@ function refreshTable(table, monsterStats, ownedMonsters){
         input = document.createElement('input')
         input.type='text';
         //input.style.flex="auto"
-        if(j==0) input.style.width="14ch"
-        if(j<5 && j>0) input.style.width="4ch"
         input.value=(String)(ownedMonsters[i][monsterStats[j]])
-        input.addEventListener("keyup", function(event) {
-          ownedMonsters[i][monsterStats[j]] = event.target.value; //console.log(ownedMonsters[i][monsterStats[j]]) console.log(event.target.value)
-        })
+        if(j==0){ 
+          input.style.width="14ch"
+          input.addEventListener("keyup", function(event) {
+            ownedMonsters[i][monsterStats[j]] = event.target.value; //console.log(ownedMonsters[i][monsterStats[j]]); console.log(event.target.value)
+          })
+        }
+        else if(j<5 && j>0){
+          input.style.width="4ch"
+          input.addEventListener("keyup", function(event) {
+            ownedMonsters[i][monsterStats[j]] = parseInt(event.target.value); //console.log(ownedMonsters[i][monsterStats[j]]); console.log(event.target.value)
+          })
+        } 
+        else{
+          input.addEventListener("keyup", function(event) {
+            ownedMonsters[i][monsterStats[j]] = event.target.value; //console.log(ownedMonsters[i][monsterStats[j]]); console.log(event.target.value)
+          })
+        }
         cell.appendChild(input)
         //cell.innerHTML = ownedMonsters[i][monsterStats[j]];
     }
@@ -159,7 +171,7 @@ function testBreedingPairB(monsterStats, monsters){
 function testBreedingGroups(pairs, numGroups){
   groups=[]
   console.log
-  for(let i=0; i<pairs.length - numGroups; i++){
+  for(let i=0; i<pairs.length - numGroups+1; i++){
     let pairNums = []
     //pairs to look at, total number of pairs in a group, current depth, pairNumToCheck, ScorpionsUsed
     let group={
@@ -170,10 +182,7 @@ function testBreedingGroups(pairs, numGroups){
     if(group)
       groups.push(group)
   }
-  if(!groups) groups=[{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
-  else{
-
-  }
+  if(!groups) return [{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
   return groups.sort( (a,b)=>{
     return b.chanceToGetTarget-a.chanceToGetTarget
   })
@@ -298,12 +307,12 @@ function createTables(monsterStats, ownedMonsters){
 
     let t0 = performance.now()
     pairs = testBreedingPairB(monsterStats, ownedMonsters)
-    if(numPairs.value>0 && numPairs.value<=ownedMonsters.length/2){
+    if(numPairs.value>0 && numPairs.value<ownedMonsters.length/2){ //strictly less than because owned monsters includes target monster
       groups = testBreedingGroups(pairs, numPairs.value)
-      console.log("Right number of groups bro: "+numPairs)
+      console.log("Right number of groups bro: "+numPairs.value + "out of: " + ownedMonsters.length/2)
     }
     else{
-      console.log("not the right number of groups bro: "+numPairs)
+      console.log("not the right number of groups bro: "+numPairs.value)
       groups=[{name:"NumGroups=0 or More pairs than possible",chanceToGetTarget:"cannot get groups"}]
     }
     let t1 = performance.now()
@@ -349,6 +358,18 @@ function refreshResultsTable(resultsTable, pairs){
     cell=row.insertCell(-1)
     cell.innerHTML = pairs[i].chanceToGetTarget + "%";
   }
+}
+
+function validateUserData(ownedMonsters){
+  let errorMessage=""
+  for(let i=0;i<ownedMonsters.length; i++){
+    rarity=parseInt(ownedMonsters.Rarity)
+    if(!rarity) errorMessage+="Monsters["+i+"] rarity does not exist or is blank"
+    else if(isNaN(rarity)) errorMessage+="Monsters["+i+"] rarity is not a number"
+    else if(rarity<1 || rarity>7) errorMessage+="Monsters["+i+"] rarity is out of range [1,7]"
+    if(!rarity) errorMessage+="Monsters["+i+"] rarity does not exist or is blank"
+  }
+  return errorMessage
 }
 
 window.onload = function(){
