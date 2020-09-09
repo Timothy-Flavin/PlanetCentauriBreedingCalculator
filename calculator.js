@@ -464,7 +464,7 @@ window.onload = function(){
  
   let ownedMonsters = [{
     Name: "Scorpion",
-    Rarity: 3,
+    Rarity: 4,
     Shiny: 1,
     Hp: 25,
     Atk: 25,
