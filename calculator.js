@@ -8,8 +8,11 @@ function refreshTable(table, monsterStats, ownedMonsters){
   }
   for (let i = 0; i < ownedMonsters.length; i++) {
     row = table.insertRow(-1)
+    if(i==0){
+      row.className="bg-green-light"
+    }
     let cell = row.insertCell(-1)
-    cell.innerHTML = i;
+    cell.innerHTML = i==0?'0, Target':i;
     for (let j = 0; j < monsterStats.length; j++) {
         let cell = row.insertCell(-1)
         input = document.createElement('input')
@@ -220,7 +223,7 @@ function createMainTable(monsterStats, ownedMonsters){
   
   let headRow = table.insertRow(-1)
   let headerCell = document.createElement("TH")
-      headerCell.innerHTML = "Num";
+      headerCell.innerHTML = "Number";
       headRow.appendChild(headerCell)
   for (let i = 0; i < monsterStats.length; i++) {
       let headerCell = document.createElement("TH")
