@@ -1,72 +1,139 @@
 <!DOCTYPE html>
 <html>
-  <Title>Planet Centauri Breeding calculator V0.4.0</Title>
-  <h1>Planet Centauri Breeding calculator V0.4.0</h1>
-  <p>
-    This is a calculator to find the best possible breeding pairs in Planet Centauri given a list of monsters <br/>
-    The first monster is your target monster. This means that you put the stats you want in the '0' slot. <br/>
-  </p>
-  <button id="ShowInfoButton">Show/Hide Extra Info</button>
-  <p id="ShowInfoText"  style="display: none;">
-  <b>Name:</b> The name of the monster you are breeding, ex: Whisp or Zombie<br/><br/>
-  <b>Rarity:</b> Rarity is the color of the monster's name when hovered over. <br/>
-  There are 7 levels or rarity, white, green, purple, blue, yellow, orange, <br/>
-  and red. 1-7. A monster can only level in a given trait up to it's rarity.<br/>
-  For instance, a green Scorpion with Life Bonus 7 will only ever get to Life<br/>
-  Bonus 2 because it's rarity, green, is rarity 2. Even at level 70. <br/>
-  The calculator will be looking for the chances of creating a monster<br/>
-  with a rarity equal or greater than the rarity of the target monster<br/>
-  so if monster 0 has rarity 7 then only red/legendary monsters will be<br/>
-  searched for.<br/><br/>
-  <b>Shiny:</b> 1 for true, 0 for false. A monster's shinyness determines<br/>
-  whether or not the monster will have a prefix such as 'rare' or <br/>
-  'legendary'. This will also give the monster the pallet swap.<br/><br/>
-  <b>Hp:</b> The hp modifier on the monster, 1-50. if the monster '0', the <br/>
-  target monster has an hp > 0, then the calculator will look for a monster<br/>
-  with an hp modifier greater than or equal to the target monster<br/><br/>
-  <b>Atk:</b> same as hp but attack<br/><br/>
-  <b>Attributes:</b> A monster can have up to 7 attributes. how high a given<br/>
-  monster can level in a given attribute is decided by the minimum of<br/>
-  it's attribute level and it's rarity. (See rarity above) In this<br/>
-  calculator you must make sure that you name attributes the same or<br/>
-  the calculator may think that two monsters hace different attributes<br/>
-  when they don't. This is because I want this calculator to continue<br/>
-  working when new attributes are added, and not all monsters can have<br/>
-  all attributes. for example Life Bonus 3 is not the same as lifebonus3<br/>
-  Spelling matters and this calculator will think that 2 monsters with <br/>
-  life bonus written those 2 ways actually have different attributes. <br/>
-  if any of a target monster's attributes are left blank, The calculator<br/>
-  will assume you do not care what goes in those attribute slots. 
-  </p>
-  <div id="dvTable" style="overflow-x: scroll;">
+  <Title>Planet Centauri Breeding calculator V0.5.0</Title>
+  <body class="bg bg-blue-dark text-white font-verdana">
+    <div class = "main-card bg-blue">
+      <h1>Planet Centauri Breeding calculator V0.5.0</h1>
+      <p>
+        This is a calculator to find the best possible breeding pairs in Planet Centauri given a list of monsters <br/>
+        The first monster is your target monster. This means that you put the stats you want in the '0' slot. <br/>
+      </p>
+      <button id="ShowInfoButton">Show/Hide Extra Info</button>
+      <p id="ShowInfoText"  style="display: none;">
+      <b>Name:</b> The name of the monster you are breeding, ex: Whisp or Zombie<br/><br/>
+      <b>Rarity:</b> Rarity is the color of the monster's name when hovered over. <br/>
+      There are 7 levels or rarity, white, green, purple, blue, yellow, orange, <br/>
+      and red. 1-7. A monster can only level in a given trait up to it's rarity.<br/>
+      For instance, a green Scorpion with Life Bonus 7 will only ever get to Life<br/>
+      Bonus 2 because it's rarity, green, is rarity 2. Even at level 70. <br/>
+      The calculator will be looking for the chances of creating a monster<br/>
+      with a rarity equal or greater than the rarity of the target monster<br/>
+      so if monster 0 has rarity 7 then only red/legendary monsters will be<br/>
+      searched for.<br/><br/>
+      <b>Shiny:</b> 1 for true, 0 for false. A monster's shinyness determines<br/>
+      whether or not the monster will have a prefix such as 'rare' or <br/>
+      'legendary'. This will also give the monster the pallet swap.<br/><br/>
+      <b>Hp:</b> The hp modifier on the monster, 1-50. if the monster '0', the <br/>
+      target monster has an hp > 0, then the calculator will look for a monster<br/>
+      with an hp modifier greater than or equal to the target monster<br/><br/>
+      <b>Atk:</b> same as hp but attack<br/><br/>
+      <b>Attributes:</b> A monster can have up to 7 attributes. how high a given<br/>
+      monster can level in a given attribute is decided by the minimum of<br/>
+      it's attribute level and it's rarity. (See rarity above) In this<br/>
+      calculator you must make sure that you name attributes the same or<br/>
+      the calculator may think that two monsters hace different attributes<br/>
+      when they don't. This is because I want this calculator to continue<br/>
+      working when new attributes are added, and not all monsters can have<br/>
+      all attributes. for example Life Bonus 3 is not the same as lifebonus3<br/>
+      Spelling matters and this calculator will think that 2 monsters with <br/>
+      life bonus written those 2 ways actually have different attributes. <br/>
+      if any of a target monster's attributes are left blank, The calculator<br/>
+      will assume you do not care what goes in those attribute slots. 
+      </p>
+      <div id="dvTable" class="my-md" style="overflow-x: scroll;">
 
-  </div>
-  <button id="AddMonsterButton">+</button>
-  <button id="RemoveMonsterButton">-</button>
-  <input id="MonsterToRemove" type='text' style="border-bottom-style: solid;"/><br/><br/>
-  <p style="color: red;", id="errorText"></p>
-  <span>
-    <button id="TestPairsButton">Calculate Pairs</button>
-    <input id="NumPairs" placeholder="Number of pairs to breed"  style="border-bottom-style: solid;"></input>
-  </span>
-  
-  <p>If you have 4 hatcheries, this will find the combination <br/>
-  of 4 pairs which will give you the highest chance per<br/>
-  generation to get the target scorpion</p>
-  <div>
-    <div id="resultsTable" style="float: left">
+      </div>
+      <button id="AddMonsterButton">+</button>
+      <button id="RemoveMonsterButton" >-</button>
+      <input id="MonsterToRemove" type='text' style="border-bottom-style: solid;" class="bg-blue"/><br/><br/>
+      <p style="color: rgb(111,84,149); background-color: rgb(160,158,214); border-radius:6px;" id="errorText"></p>
+      <span>
+        <button id="TestPairsButton">Calculate Pairs</button>
+        <input id="NumPairs" placeholder="Number of pairs to breed"  style="border-bottom-style: solid;" class="bg-blue"></input>
+      </span>
+      
+      <p>If you have 4 hatcheries, this will find the combination <br/>
+      of 4 pairs which will give you the highest chance per<br/>
+      generation to get the target scorpion</p>
+      <div>
+        <div id="resultsTable" style="float: left">
 
+        </div>
+        <div id="resultsTable2" class="my-md">
+      
+        </div>
+      </div>
     </div>
-    <div id="resultsTable2">
-  
-    </div>
-  </div>
-  
+  </body>
   <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
   <script src="calculator.js"></script>
   <style type="text/css">
     input { border: none }
     /* other style definitions go here */
+    .bg-blue{
+      background-color: rgb(104,143,173);
+    }
+    .bg-blue-dark{
+      background-color:rgb(63,100,126);
+    }
+    .main-card{
+      margin-left: 10%;
+      margin-right: 10%;
+      margin-top: 5%;
+      margin-bottom: 5%;
 
+      padding-left: 5%;
+      padding-right: 5%;
+      padding-top: 5%;
+      padding-bottom: 5%;
+
+      border-color: rgb(82,204,206);
+      border-radius: 4px;
+    }
+    .text-white{
+      color: white;
+    }
+    .font-verdana{
+      font-family: verdana;
+    }
+    button{
+      background-color: rgb(149,212,122);
+      border-color: rgb(135,195,105);
+      color:rgb(63,100,126);
+    }
+    .pd-sm{
+      padding:2%
+    }
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: rgb(149,212,122);
+      opacity: 1; /* Firefox */
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color: rgb(149,212,122);
+    }
+
+    ::-ms-input-placeholder { /* Microsoft Edge */
+      color: rgb(149,212,122);
+    }
+    table{
+      border-radius:6px;
+      background-color:green !important;
+      padding:1%;
+    }
+    .my-md{
+      margin-top:3%;
+      margin-bottom:3%;
+    }
+    td{
+      background-color: green;
+      
+      padding:0%;
+      margin:0%;
+    }
+    tbody{
+      border-style:solid;
+      border-color:darkgreen;
+    }
   </style>
 </html>

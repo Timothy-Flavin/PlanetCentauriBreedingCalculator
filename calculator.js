@@ -216,7 +216,6 @@ function checkGroupsRecursive(pairs, numGroups, curGroupDepth, curPairNum, Scorp
 
 function createMainTable(monsterStats, ownedMonsters){
   let table = document.createElement("TABLE")
-  table.border = "1";
   //add the header
   
   let headRow = table.insertRow(-1)
@@ -309,9 +308,11 @@ function createTables(monsterStats, ownedMonsters){
     if(errString && errString!=""){
       console.log(errString)
       document.getElementById("errorText").innerHTML=errString
+      document.getElementById("errorText").className='pd-sm border-style: solid;'
     }
     else{
       document.getElementById("errorText").innerHTML=''
+      document.getElementById("errorText").className=''
       let t0 = performance.now()
       pairs = testBreedingPairB(monsterStats, ownedMonsters)
       if(numPairs.value>0 && numPairs.value<ownedMonsters.length/2){ //strictly less than because owned monsters includes target monster
@@ -341,7 +342,6 @@ function createTables(monsterStats, ownedMonsters){
 
 function createGroupTable(string1, string2){
   let resultsTable = document.createElement("TABLE")
-  resultsTable.border = "1";
   //add the header
   
   let newHeadRow = resultsTable.insertRow(-1)
