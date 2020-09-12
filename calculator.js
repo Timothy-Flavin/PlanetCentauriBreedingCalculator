@@ -62,14 +62,14 @@ function testBreedingPairB(monsterStats, monsters){
 
       //calculate the probability of the hp being high enough
       let cHpPercent = 0
-      let avgStat = Math.floor((parseInt(monsters[m1].Hp)+parseInt(monsters[m2].Hp))/2)
+      let avgStat = Math.floor((parseInt(monsters[m1].Hp)+parseInt(monsters[m2].Hp))/4)
       let maxStat = Math.max(parseInt(monsters[m1].Hp), parseInt(monsters[m2].Hp))
       if(avgStat>=parseInt(monsters[0].Hp)) cHpPercent=1
       else cHpPercent = (maxStat+1 - parseInt(monsters[0].Hp))/maxStat
       
       //calculate the probability of the attack being high enough
       let cAtkPercent = 0
-      avgStat = Math.floor((parseInt(monsters[m1].Atk)+parseInt(monsters[m2].Atk))/2)
+      avgStat = Math.floor((parseInt(monsters[m1].Atk)+parseInt(monsters[m2].Atk))/4) //this 4 was a two but itchyfart said it is half the avg
       maxStat = Math.max(parseInt(monsters[m1].Atk), parseInt(monsters[m2].Atk))
       if(avgStat>=parseInt(monsters[0].Atk)) cAtkPercent=1
       else cAtkPercent = (maxStat+1 - parseInt(monsters[0].Atk))/maxStat
