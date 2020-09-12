@@ -31,6 +31,12 @@ function refreshTable(table, monsterStats, ownedMonsters){
             ownedMonsters[i][monsterStats[j]] = parseInt(event.target.value); //console.log(ownedMonsters[i][monsterStats[j]]); console.log(event.target.value)
           })
         } 
+        else if(j==5){
+          input.style.width="4ch"
+          input.addEventListener("keyup", function(event) {
+            ownedMonsters[i][monsterStats[j]] = (String)(event.target.value); //console.log(ownedMonsters[i][monsterStats[j]]); console.log(event.target.value)
+          })
+        }
         else{
           input.addEventListener("keyup", function(event) {
             ownedMonsters[i][monsterStats[j]] = event.target.value; //console.log(ownedMonsters[i][monsterStats[j]]); console.log(event.target.value)
@@ -46,11 +52,17 @@ function refreshTable(table, monsterStats, ownedMonsters){
 
 function testBreedingPairB(monsterStats, monsters){
   let pairList = []
-  let debugTest = false
+  let debugTest = true
   for(let m1=1; m1<monsters.length; m1++){
     for(let m2=m1+1; m2<monsters.length; m2++){
       pairList[m1.toString() + "&" + m2.toString()]=0;
       if(debugTest) console.log("Testing: "+m1.toString() + "&" + m2.toString())
+      //Test if Sex is compatible 
+      let cSexPercent = 1
+      if(monsters[m1].Sex === monsters[m2].Sex)
+        cSexPercent *= 0
+      if(monsters[0].Sex === 'M' || monsters[0].Sex === 'F')
+        cSexPercent*=0.5;
       //Calculate the probability that a child is as rare or rarer than the target
       let maxR = Math.max(parseInt(monsters[m1].Rarity), parseInt(monsters[m2].Rarity))
       let cRarityPercent = (maxR-parseInt(monsters[0].Rarity)+1)/maxR
@@ -76,7 +88,7 @@ function testBreedingPairB(monsterStats, monsters){
 
       //calculate the probability of the child having the requested attributes
       let numRequiredAttributes = 0
-      for(let i=5; i<monsterStats.length;i++){
+      for(let i=6; i<monsterStats.length;i++){
         if(monsters[0][monsterStats[i]] && monsters[0][monsterStats[i]]!='' && monsters[0][monsterStats[i]].toLowerCase()!='void')
           numRequiredAttributes++
       }
@@ -114,12 +126,13 @@ function testBreedingPairB(monsterStats, monsters){
 
       if(debugTest){
         console.log(m1+"&"+m2)
+        console.log("Sex %: "+cSexPercent)
         console.log("Rarity %: "+cRarityPercent)
         console.log("Shiny %: "+cShinyPercent)
         console.log("Hp %: "+cHpPercent)
         console.log("Attack %: "+cAtkPercent)
         console.log("Attributes %: "+cAttributePercent)
-        console.log("Overall %: "+(cRarityPercent*cShinyPercent*cHpPercent*cAtkPercent*cAttributePercent))
+        console.log("Overall %: "+(cRarityPercent*cShinyPercent*cHpPercent*cAtkPercent*cAttributePercent*cSexPercent))
       }
       //console.log(math.combinations(9,5))
 
@@ -152,7 +165,7 @@ function testBreedingPairB(monsterStats, monsters){
       }
       pairList[m1.toString() + "&" + m2.toString()]/=numTimes
       */
-      pairList[m1.toString() + "&" + m2.toString()]=cRarityPercent*cShinyPercent*cHpPercent*cAtkPercent*cAttributePercent*100
+      pairList[m1.toString() + "&" + m2.toString()]=cRarityPercent*cShinyPercent*cHpPercent*cAtkPercent*cAttributePercent*cSexPercent*100
     }
   }
   let orderedList = []
@@ -256,6 +269,7 @@ function createButtons(table, monsterStats, ownedMonsters){
         Shiny: 0,
         Hp: 40,
         Atk: 40,
+        Sex: "M",
         Attribute1: "Haste3",
         Attribute2: "Fireballs3",
         Attribute3: "LighteningTrap4",
@@ -456,6 +470,7 @@ window.onload = function(){
     "Shiny",
     "Hp",
     "Atk",
+    "Sex",
     "Attribute1",
     "Attribute2",
     "Attribute3",
@@ -471,6 +486,7 @@ window.onload = function(){
     Shiny: 1,
     Hp: 25,
     Atk: 25,
+    Sex:"M",
     Attribute1: "Haste3",
     Attribute2: "Fireballs3",
     Attribute3: "LighteningTrap4",
@@ -485,6 +501,7 @@ window.onload = function(){
     Shiny: 1,
     Hp: 41,
     Atk: 38,
+    Sex:"F",
     Attribute1: "Haste3",
     Attribute2: "Fireballs3",
     Attribute3: "LighteningTrap4",
@@ -499,6 +516,7 @@ window.onload = function(){
     Shiny: 1,
     Hp: 30,
     Atk: 38,
+    Sex:"M",
     Attribute1: "Haste3",
     Attribute2: "Fireballs3",
     Attribute3: "LighteningTrap4",
@@ -513,6 +531,7 @@ window.onload = function(){
     Shiny: 0,
     Hp: 47,
     Atk: 43,
+    Sex:"F",
     Attribute1: "Haste3",
     Attribute2: "Flame3",
     Attribute3: "Regen4",
