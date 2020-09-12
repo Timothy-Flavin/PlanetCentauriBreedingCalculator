@@ -65,7 +65,7 @@ function testBreedingPairB(monsterStats, monsters){
         cSexPercent*=0.5;
       //Calculate the probability that a child is as rare or rarer than the target
       let maxR = Math.max(parseInt(monsters[m1].Rarity), parseInt(monsters[m2].Rarity))
-      let cRarityPercent = (maxR-parseInt(monsters[0].Rarity)+1)/maxR
+      let cRarityPercent =Math.max((maxR-parseInt(monsters[0].Rarity)+1)/maxR, 0)
 
       //calculate the probability that a child is as shiny as the target
       //todo: must make an input check to confirm that no scorpions are marked as shiny with a rarity < 3
@@ -77,14 +77,14 @@ function testBreedingPairB(monsterStats, monsters){
       let avgStat = Math.floor((parseInt(monsters[m1].Hp)+parseInt(monsters[m2].Hp))/4)
       let maxStat = Math.max(parseInt(monsters[m1].Hp), parseInt(monsters[m2].Hp))
       if(avgStat>=parseInt(monsters[0].Hp)) cHpPercent=1
-      else cHpPercent = (maxStat+1 - parseInt(monsters[0].Hp))/maxStat
+      else cHpPercent = Math.max((maxStat+1 - parseInt(monsters[0].Hp))/maxStat,0)
       
       //calculate the probability of the attack being high enough
       let cAtkPercent = 0
       avgStat = Math.floor((parseInt(monsters[m1].Atk)+parseInt(monsters[m2].Atk))/4) //this 4 was a two but itchyfart said it is half the avg
       maxStat = Math.max(parseInt(monsters[m1].Atk), parseInt(monsters[m2].Atk))
       if(avgStat>=parseInt(monsters[0].Atk)) cAtkPercent=1
-      else cAtkPercent = (maxStat+1 - parseInt(monsters[0].Atk))/maxStat
+      else cAtkPercent = Math.max((maxStat+1 - parseInt(monsters[0].Atk))/maxStat,0)
 
       //calculate the probability of the child having the requested attributes
       let numRequiredAttributes = 0
